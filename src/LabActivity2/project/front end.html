@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>Clicker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"/>
+</head>
+<body>
+
+<div class="ui centered grid">
+    <div class="row"></div>
+
+    <div class="center aligned row">
+        <h2>GAME</h2>
+    </div>
+
+    <div class="one wide column"></div>
+    <div class="three wide column">
+        <p class="ui small header">Timer</p>
+        <p class="ui small header" id="timer"></p>
+</div>
+    <div class="three wide column"></div>
+    <div class="two wide column">
+        <div class="ui placeholder segment">
+            <div class="ui icon header" id="clickTimes">0</div>
+            <button class="ui blue button" onclick="clickonce()" >CLICK</button>
+        </div>
+    </div>
+            <div class="three wide column"></div>
+            <div class="three wide column">
+                <h3 id="rank">Rank</h3>
+                <li id="rank1">No.1:this</li>
+                <li id="rank2">No.2:is</li>
+                <li id="rank3">No.3:the front end</li>
+            </div>
+            <div class="one wide column"></div>
+            <div class="row"></div>
+
+    <div class="six wide column"></div>
+    <div class="four wide center aligned column">
+        <div class="ui header">Name:</div>
+        <input type="text" id="myText" value="Username">
+        <button class="ui blue button" onclick="entername()">Enter</button>
+        <p id="searchname"></p>
+
+
+    </div>
+    <div class="six wide column"></div>
+    <div class="row"></div>
+        <h3>Item1</h3>
+        <div class="ui icon header" id="buyequipment">cpc=5, cost=50</div>
+        <button class="ui blue button" onclick="buyItem()" >BUY</button>
+
+
+</div>
+
+
+
+
+
+
+
+    </body>
+    <script>
+        // var startTime
+
+        var rankData = {"rank": [ {"user": "user1", "coin": 100}, {"user": "user2", "coin": 50}, {"user": "user3", "coin": 10} ]};
+
+        var coinsPerClick = 1;
+        var times = 0;
+
+        var items = {"item1": {"cost": 50, "addition": 5}, "item2": {"cost": 100, "addition": 5} };
+
+        function clickonce(){
+            times += coinsPerClick;
+            document.getElementById("clickTimes").innerHTML = times;
+            sortRank(rankData, "self", times)
+        }
+
+        function entername() {
+            var x = document.getElementById("myText").value;
+            document.getElementById("searchname").innerHTML = x;
+        }
+
+        var countDownDate = new Date("Apr 1, 2019 15:19:00").getTime();
+
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+
+            // Get todays date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Output the result in an element with id="demo"
+            document.getElementById("timer").innerHTML = days + "d " + hours + "h "
+                + minutes + "m " + seconds + "s ";
+
+            // If the count down is over, write some text
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("timer").innerHTML = "EXPIRED";
+            }
+        }, 1000);
+
+        function sortRank(data, user, coin) {
+            rankList = data['rank']
+            selfData = {'user': user, 'coin': coin}
+            resultRankList = []
+
+            var selfInserted = false
+            for (i in [0, 1, 2]) {
+                if (!selfInserted) {
+                    if (selfData['coin'] > rankList[i]['coin']) {
+                        resultRankList.push(selfData)
+                        selfInserted = true
+                    } else {
+                        resultRankList.push(rankList[i])
+                    }
+                } else {
+                    resultRankList.push(rankList[i-1])
+                }
+            }
+
+            updateRank(resultRankList)
+        }
+
+        function updateRank(rankingList) {
+            console.log(rankingList)
+            document.getElementById("rank1").innerHTML = "No.1: " + rankingList[0]['user'] + " - " + rankingList[0]['coin'];
+            document.getElementById("rank2").innerHTML = "No.2: " + rankingList[1]['user'] + " - " + rankingList[1]['coin'];
+            document.getElementById("rank3").innerHTML = "No.3: " + rankingList[2]['user'] + " - " + rankingList[2]['coin'];
+        }
+
+        function buyItem() {
+            attrs = items['item1'];
+            if (times >= attrs['cost']) {
+                times -= attrs['cost'];
+                document.getElementById("clickTimes").innerHTML = times;
+                coinsPerClick += attrs['addition'];
+                // update to server
+            }
+        }
+
+
+
+    </script>
+
+</div>
+
+</html>
